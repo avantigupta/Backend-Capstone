@@ -15,23 +15,15 @@ public class IssuanceMapper {
 
     }
 
-    public static IssuanceOutDTO mapToIssuanceDTO(Issuance issuance, IssuanceOutDTO issuanceOutDTO, BooksRepository booksRepository, UsersRepository usersRepository) {
+    public static IssuanceOutDTO mapToIssuanceDTO(Issuance issuance, IssuanceOutDTO issuanceOutDTO) {
 
-
+        issuanceOutDTO.setId(issuance.getId());
         issuanceOutDTO.setIssuedAt(issuance.getIssuedAt());
         issuanceOutDTO.setReturnedAt(issuance.getReturnedAt());
         issuanceOutDTO.setStatus(issuance.getStatus());
         issuanceOutDTO.setIssuanceType(issuance.getIssuanceType());
-        // Fetch Book details using bookId
-        Books book = booksRepository.findById(issuance.getBookId())
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found for this id :: " + issuance.getBookId()));
-        issuanceOutDTO.setBook(book);
-
-        // Fetch User details using userId
-        Users user = usersRepository.findById(issuance.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + issuance.getUserId()));
-        issuanceOutDTO.setUser(user);
-
+        issuanceOutDTO.setBook(issuance.getBook());
+        issuanceOutDTO.setUser(issuance.getUser());
 
         return issuanceOutDTO;
 
@@ -40,21 +32,40 @@ public class IssuanceMapper {
 
     public static Issuance mapToIssuance(IssuanceInDTO issuanceInDTO, Issuance issuance, BooksRepository booksRepository, UsersRepository usersRepository) {
 
+        issuance.setId(issuanceInDTO.getId());
         issuance.setIssuedAt(issuanceInDTO.getIssuedAt());
         issuance.setReturnedAt(issuanceInDTO.getReturnedAt());
         issuance.setStatus(issuanceInDTO.getStatus());
         issuance.setIssuanceType(issuanceInDTO.getIssuanceType());
-
         Books book = booksRepository.findById(issuanceInDTO.getBookId())
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found for this id :: " + issuanceInDTO.getBookId()));
-        issuance.setBookId(book.getId());
-
+        issuance.setBook(book);
         Users user = usersRepository.findById(issuanceInDTO.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + issuanceInDTO.getUserId()));
-        issuance.setUserId(user.getId());
+        issuance.setUser(user);
 
         return issuance;
     }
+    public static IssuanceOutDTO mapToIssuanceOutDTO(Issuance issuance, BooksRepository bookRepository, UsersRepository userRepository) {
+        IssuanceOutDTO issuanceOutDTO = new IssuanceOutDTO();
 
+        issuanceOutDTO.setId(issuance.getId());
+        issuanceOutDTO.setIssuedAt(issuance.getIssuedAt());
+        issuanceOutDTO.setReturnedAt(issuance.getReturnedAt());
+        issuanceOutDTO.setStatus(issuance.getStatus());
+        issuanceOutDTO.setIssuanceType(issuance.getIssuanceType());
+
+        // Fetch Book details using bookId
+        Books book = bookRepository.findById(issuance.getBook().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found for this id :: " + issuance.getBook().getId()));
+        issuanceOutDTO.setBook(book);
+
+        // Fetch User details using userId
+        Users user = userRepository.findById(issuance.getUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + issuance.getUser().getId()));
+        issuanceOutDTO.setUser(user);
+
+        return issuanceOutDTO;
+    }
 
 }

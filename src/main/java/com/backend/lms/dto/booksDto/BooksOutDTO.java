@@ -14,5 +14,5 @@ public class BooksOutDTO {
     private String title;
     private String author;
     private Integer quantity;
-   private CategoryDTO category;
+    private CategoryDTO category;
 }

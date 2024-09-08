@@ -11,9 +11,7 @@ public class BooksInDTO {
 
     private String title;
     private String author;
-
     private Long categoryId;
-
     private Integer quantity;
 
 }

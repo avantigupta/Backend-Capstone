@@ -1,38 +1,22 @@
 package com.backend.lms.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-
+import lombok.*;
 @Entity
+@Table(name = "Category")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Table(name = "Categories")
+@Getter
+@Setter
+
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
-
-    private String name;
-
-    @Column(name = "category_desc")
-    private String categoryDesc;
-
-    @Column(name = "created_at", updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    @Column(nullable = false)
+    private String categoryName;
 
 }

@@ -10,6 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ResponseDTO {
     private String status;
-
     private String message;
 }

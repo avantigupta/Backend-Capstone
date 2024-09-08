@@ -1,19 +1,14 @@
 package com.backend.lms.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.sql.Timestamp;
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Issuances")
+@Table(name = "Issuance")
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Issuance {
@@ -22,32 +17,25 @@ public class Issuance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Users user;
 
+    @ManyToOne
+    @JoinColumn(name = "book_id", nullable = false)
+    private Books book;
 
-    @Column(name = "book_id")
-    private Long bookId;
-
-    @Column(name = "issue_at")
+    @Column(name = "issued_at")
     private LocalDateTime issuedAt;
 
-    @Column(name = "return_at")
+    @Column(name = "returned_at")
     private LocalDateTime returnedAt;
 
-
+    @Column(nullable = false)
     private String status;
 
-    @Column(name = "issuance_type")
-
+    @Column(name = "issuance_type", nullable = false)
     private String issuanceType;
 
-    @Column(name = "created_at", updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
 
 }

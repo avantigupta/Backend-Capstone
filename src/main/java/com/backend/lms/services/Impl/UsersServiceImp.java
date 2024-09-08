@@ -2,12 +2,18 @@ package com.backend.lms.services.Impl;
 
 import com.backend.lms.dto.usersDto.UsersInDTO;
 import com.backend.lms.dto.usersDto.UsersOutDTO;
+import com.backend.lms.entities.Category;
 import com.backend.lms.entities.Users;
 import com.backend.lms.mapper.UsersMapper;
+import com.backend.lms.provider.PasswordUtils;
 import com.backend.lms.repositories.UsersRepository;
+import com.backend.lms.services.ISmsService;
 import com.backend.lms.services.IUsersService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -31,14 +37,46 @@ public class UsersServiceImp implements IUsersService, UserDetailsService {
     @Autowired
     private UsersRepository usersRepository;
 
+    @Autowired
+    private PasswordUtils passwordUtils;
+
+    private  final ISmsService iSmsService;
+
     @Override
     public String createUser(UsersInDTO usersInDTO) {
+        String generatedPassword = passwordUtils.generateRandomPassword();
+        String encodedPassword = passwordUtils.encodePassword(generatedPassword);
         Users user = UsersMapper.mapToUsers(usersInDTO);
-        user.setPassword(encoder.encode(user.getPassword()));
+        user.setPassword(encodedPassword);
         Users savedUser = usersRepository.save(user);
+        String message = String.format( "\nWelcome %s\n" +
+                        "Thankyou user, You have been successfully registered to BookNest! \n" +
+                        "These are your login credentials\n" +
+                        "Username: %s (OR) %s\n" +
+                        "Password: %s",
+                savedUser.getName(),
+                savedUser.getPhoneNumber(),
+                savedUser.getEmail(),
+                generatedPassword);
 
-        return "User added successfully with ID: " + savedUser.getId();
+              iSmsService.verifyNumber(savedUser.getPhoneNumber());
+             iSmsService.sendSms(savedUser.getPhoneNumber(), message);
+        return "User added successfully with ID: " + savedUser.getId() + ". The generated password is: " + generatedPassword;
+
     }
+
+    @Override
+    public Page<UsersOutDTO> getUsers(int page, int size, String search) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Users> usersPage;
+        if (search != null && !search.isEmpty()) {
+            usersPage = usersRepository.findByNameContainingIgnoreCaseAndRoleEquals(search, "USER", pageable);
+        } else {
+            usersPage = usersRepository.findByRoleEquals("USER", pageable);
+        }
+        return usersPage.map(users -> UsersMapper.mapToUsersOutDTO(users));
+    }
+
 
     @Override
     public UsersOutDTO getUserById(Long id) {
@@ -61,24 +99,39 @@ public class UsersServiceImp implements IUsersService, UserDetailsService {
     }
 
     @Override
-    public UsersOutDTO updateUser(Long id, UsersInDTO usersInDTO) {
-        Users existingUser = usersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
-
-        existingUser.setName(usersInDTO.getName());
-        existingUser.setEmail(usersInDTO.getEmail());
-        existingUser.setPhoneNumber(usersInDTO.getPhoneNumber());
-        existingUser.setRole(usersInDTO.getRole());
-        existingUser.setPassword(encoder.encode(usersInDTO.getPassword()));
-
-        Users updatedUser = usersRepository.save(existingUser);
-        return UsersMapper.mapToUsersOutDTO(updatedUser);
+    public Long getUserCount() {
+        return usersRepository.count();
     }
 
     @Override
-    public String deleteUser(Long id) {
+    public String updateUser(Long id, UsersInDTO usersDTO) {
+        Users existingUser = usersRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
+
+        if (usersDTO.getName() != null) {
+            existingUser.setName(usersDTO.getName());
+        }
+        if (usersDTO.getEmail() != null) {
+            existingUser.setEmail(usersDTO.getEmail());
+        }
+        if (usersDTO.getPhoneNumber() != null) {
+            existingUser.setPhoneNumber(usersDTO.getPhoneNumber());
+        }
+
+        Users updatedUser = usersRepository.save(existingUser);
+        UsersMapper.mapToUsersOutDTO(updatedUser);
+
+        return "User updated successfully with ID: " + updatedUser.getId();
+    }
+
+    @Override
+    public Optional<Users> findByPhoneNumber(String phoneNumber) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void deleteUser(Long id) {
         usersRepository.deleteById(id);
-        return "User deleted successfully with ID: " + id;
     }
 
     @Override
@@ -113,4 +166,19 @@ public class UsersServiceImp implements IUsersService, UserDetailsService {
 
         return user;
     }
+
+    @Override
+    public UsersOutDTO getUserByMobile(String number) {
+
+
+        Optional<Users> userOptional = usersRepository.findByPhoneNumber(number);
+        if (userOptional.isPresent()) {
+            Users user = userOptional.get();
+            return UsersMapper.mapToUsersOutDTO(user);
+        } else {
+            throw new UsernameNotFoundException("User not found with phone number: " + number);
+        }
+    }
+
+
 }

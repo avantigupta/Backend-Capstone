@@ -45,8 +45,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/api/users/register","/api/users/signin").permitAll()
-                                .requestMatchers("/api/users/**", "/api/books/**","/api/categories/**").hasRole("ADMIN")
-                                .requestMatchers("/api/v1/issuances/**").hasRole("USER")
+                                .requestMatchers("/api/v1/users/**", "/api/books/**","/api/categories/**","/api/v1/issuances/**").hasRole("ADMIN")
+                                .requestMatchers("/api/userHistory/**").hasRole("USER")
                                 .requestMatchers("/api/v1/**").permitAll()
                                 .anyRequest().authenticated()
                 )
@@ -66,7 +66,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
 

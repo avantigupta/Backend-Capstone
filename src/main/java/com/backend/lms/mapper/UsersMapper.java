@@ -12,10 +12,11 @@ public class UsersMapper {
     public static UsersOutDTO mapToUsersOutDTO(Users user) {
         UsersOutDTO usersOutDTO = new UsersOutDTO();
         usersOutDTO.setName(user.getName());
+        usersOutDTO.setId(user.getId());
         usersOutDTO.setEmail(user.getEmail());
         usersOutDTO.setPhoneNumber(user.getPhoneNumber());
         usersOutDTO.setRole(user.getRole());
-        usersOutDTO.setPassword(user.getPassword());  // Be cautious about exposing passwords
+//        usersOutDTO.setPassword(user.getPassword());  // Be cautious about exposing passwords
 
         return usersOutDTO;
     }

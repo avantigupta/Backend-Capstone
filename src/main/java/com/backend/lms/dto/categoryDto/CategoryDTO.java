@@ -9,9 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class CategoryDTO {
 
-
     private Long id;
-
     private String categoryName;
 
 }

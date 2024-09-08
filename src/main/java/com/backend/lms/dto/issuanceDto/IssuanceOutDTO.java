@@ -15,17 +15,11 @@ import java.time.LocalDateTime;
 public class IssuanceOutDTO {
 
     private Long id;
-
     private Users user;
-
     private Books book;
-
     private LocalDateTime issuedAt;
-
     private LocalDateTime returnedAt;
-
     private String status;
-
     private String issuanceType;
 
 }

@@ -12,19 +12,14 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IssuanceInDTO {
+public class    IssuanceInDTO {
 
     private Long id;
     private Long userId;
-
     private Long bookId;
-
     private LocalDateTime issuedAt;
-
     private LocalDateTime returnedAt;
-
     private String status;
-
     private String issuanceType;
 
 }

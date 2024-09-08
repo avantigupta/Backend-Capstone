@@ -9,15 +9,11 @@ import lombok.*;
 @NoArgsConstructor
 public class UsersOutDTO {
 
+    private  Long id;
     private String name;
-
-
     private String email;
-
     private String phoneNumber;
-
     private String role;
-
-    private String password;
+//    private String password;
 
 }

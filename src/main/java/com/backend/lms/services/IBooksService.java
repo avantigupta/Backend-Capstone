@@ -2,6 +2,9 @@ package com.backend.lms.services;
 
 import com.backend.lms.dto.booksDto.BooksInDTO;
 import com.backend.lms.dto.booksDto.BooksOutDTO;
+import com.backend.lms.entities.Books;
+import com.backend.lms.entities.Issuance;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,8 +16,10 @@ public interface IBooksService {
 
     String updateBook(Long id, BooksInDTO booksInDTO);
 
-    List<BooksOutDTO> getBooks();
+    Page<Books> getBooks(int page, int size, String search);
 
     Long getBookCount();
+
+    List<Issuance> getIssuancesByBookId(Long bookId);
 
 }
