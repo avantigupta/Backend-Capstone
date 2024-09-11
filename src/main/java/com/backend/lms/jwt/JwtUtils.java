@@ -1,6 +1,5 @@
 package com.backend.lms.jwt;
 
-
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -36,10 +35,9 @@ public class JwtUtils {
         String bearerToken = request.getHeader("Authorization");
         logger.debug("Authorization Header: {}", bearerToken);
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7); // Remove Bearer prefix
+            return bearerToken.substring(7);
         }
         return null;
-
     }
 
     public String generateTokenFromUsername(UserDetails userDetails) {
@@ -57,8 +55,6 @@ public class JwtUtils {
                 .and()
                 .signWith(key())
                 .compact();
-
-
     }
 
     public String getUserNameFromJwtToken(String token) {
@@ -68,22 +64,16 @@ public class JwtUtils {
                 .getPayload().getSubject();
     }
 
-
     private Key key() {
-
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-
     public boolean validateJwtToken(String authToken) {
         try {
-
-            System.out.println("Validate");
             Jwts.parser().verifyWith((SecretKey) key()).build().parseSignedClaims(authToken);
             return true;
-        } catch (
-                MalformedJwtException e) {
+        } catch (MalformedJwtException e) {
             logger.debug(e.getMessage(), Level.parse("Invalid JWT token: {}"));
         } catch (
                 ExpiredJwtException e) {
@@ -96,6 +86,4 @@ public class JwtUtils {
         }
         return false;
     }
-
-
 }

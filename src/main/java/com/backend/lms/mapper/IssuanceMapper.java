@@ -12,7 +12,6 @@ import com.backend.lms.repositories.UsersRepository;
 public class IssuanceMapper {
 
     private IssuanceMapper() {
-
     }
 
     public static IssuanceOutDTO mapToIssuanceDTO(Issuance issuance, IssuanceOutDTO issuanceOutDTO) {
@@ -24,14 +23,10 @@ public class IssuanceMapper {
         issuanceOutDTO.setIssuanceType(issuance.getIssuanceType());
         issuanceOutDTO.setBook(issuance.getBook());
         issuanceOutDTO.setUser(issuance.getUser());
-
         return issuanceOutDTO;
-
-
     }
 
     public static Issuance mapToIssuance(IssuanceInDTO issuanceInDTO, Issuance issuance, BooksRepository booksRepository, UsersRepository usersRepository) {
-
         issuance.setId(issuanceInDTO.getId());
         issuance.setIssuedAt(issuanceInDTO.getIssuedAt());
         issuance.setReturnedAt(issuanceInDTO.getReturnedAt());
@@ -54,17 +49,12 @@ public class IssuanceMapper {
         issuanceOutDTO.setReturnedAt(issuance.getReturnedAt());
         issuanceOutDTO.setStatus(issuance.getStatus());
         issuanceOutDTO.setIssuanceType(issuance.getIssuanceType());
-
-        // Fetch Book details using bookId
         Books book = bookRepository.findById(issuance.getBook().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found for this id :: " + issuance.getBook().getId()));
         issuanceOutDTO.setBook(book);
-
-        // Fetch User details using userId
         Users user = userRepository.findById(issuance.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + issuance.getUser().getId()));
         issuanceOutDTO.setUser(user);
-
         return issuanceOutDTO;
     }
 

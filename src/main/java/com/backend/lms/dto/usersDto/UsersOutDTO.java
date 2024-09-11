@@ -1,6 +1,4 @@
 package com.backend.lms.dto.usersDto;
-
-
 import lombok.*;
 
 @Getter
@@ -14,6 +12,4 @@ public class UsersOutDTO {
     private String email;
     private String phoneNumber;
     private String role;
-//    private String password;
-
 }

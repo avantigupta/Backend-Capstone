@@ -1,6 +1,5 @@
 package com.backend.lms.dto.usersDto;
 
-
 import lombok.*;
 
 @Getter

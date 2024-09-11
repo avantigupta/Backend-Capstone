@@ -7,6 +7,7 @@ import lombok.*;
 @Table(name = "Users")
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -18,7 +19,6 @@ public class Users {
 
     @Column(nullable = false)
     private String name;
-
 
     @Column(nullable = false, unique = true)
     private String email;

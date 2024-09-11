@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
 
+@CrossOrigin
 @RestController
 @RequestMapping(value = "api/users")
 public class LoginController {
@@ -17,10 +18,8 @@ public class LoginController {
     @Autowired
     private LoginServiceImp loginService;
 
-    @CrossOrigin
     @PostMapping("/signin")
     public ResponseEntity<LoginResponse> authenticateUser(@RequestBody LoginDTO loginDTO) throws Exception {
-
         String decodedPassword = new String(Base64.getDecoder().decode(loginDTO.getPassword()));
         loginDTO.setPassword(decodedPassword);
         LoginResponse response = loginService.authenticateUser(loginDTO);

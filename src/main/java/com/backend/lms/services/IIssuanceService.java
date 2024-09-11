@@ -1,8 +1,7 @@
 package com.backend.lms.services;
 
 import com.backend.lms.dto.issuanceDto.IssuanceInDTO;
-import com.backend.lms.dto.issuanceDto.IssuanceOutDTO; // Use IssuanceOutDTO for consistency
-import com.backend.lms.entities.Issuance;
+import com.backend.lms.dto.issuanceDto.IssuanceOutDTO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -10,8 +9,8 @@ import java.util.Map;
 
 public interface IIssuanceService {
 
-
     List<IssuanceOutDTO> getAllIssuances();
+
     List<IssuanceOutDTO> getIssuanceByUserId(Long userId);
 
     IssuanceOutDTO getIssuanceById(Long id);

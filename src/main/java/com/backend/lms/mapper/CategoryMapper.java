@@ -1,13 +1,10 @@
 package com.backend.lms.mapper;
-
-
 import com.backend.lms.dto.categoryDto.CategoryDTO;
 import com.backend.lms.entities.Category;
 
 public class CategoryMapper {
 
     private CategoryMapper() {
-
     }
 
 
@@ -16,7 +13,6 @@ public class CategoryMapper {
         CategoryDTO categoryDTO=new CategoryDTO();
         categoryDTO.setId(category.getId());
         categoryDTO.setCategoryName(category.getCategoryName());
-
         return  categoryDTO;
     }
 
@@ -25,10 +21,6 @@ public class CategoryMapper {
     {
         category.setId(categoryDTO.getId());
         category.setCategoryName(categoryDTO.getCategoryName());
-
-
         return category;
     }
-
-
 }

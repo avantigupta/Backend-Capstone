@@ -16,8 +16,7 @@ public interface ICategoryService {
 
     CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO);
 
-    void deleteCategory(Long id);
-
+    String deleteCategory(Long id);
     Page<Category> getCategories(int page , int size, String search);
 
 }

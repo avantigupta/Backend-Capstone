@@ -17,7 +17,6 @@ public class PasswordUtils {
         for (int i = 0; i < PASSWORD_LENGTH; i++) {
             password.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
-
         return password.toString();
     }
 

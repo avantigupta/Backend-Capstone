@@ -28,8 +28,6 @@ public class SmsServiceImp implements ISmsService
     @Override
     public void verifyNumber(String number) {
         try {
-
-            // Ensure the phone number is in E.164 format
             if (!number.startsWith("+")) {
                 number = "+91" + number;
             }
@@ -39,8 +37,6 @@ public class SmsServiceImp implements ISmsService
                     ValidationRequest.creator(new com.twilio.type.PhoneNumber(number))
                             .setFriendlyName("New Phone Number")
                             .create();
-
-            System.out.println(validationRequest.getAccountSid());
         } catch (Exception e) {
             System.out.println("Failed to verify mobile: " + number);
         }
@@ -51,9 +47,7 @@ public class SmsServiceImp implements ISmsService
 
         try {
             Twilio.init(twilioAccountSid, twilioAuthToken);
-
-            // Ensure the phone number is in E.164 format
-            if (!toPhoneNumber.startsWith("+")) {
+             if (!toPhoneNumber.startsWith("+")) {
                 toPhoneNumber = "+91" + toPhoneNumber;
             }
 
@@ -62,12 +56,9 @@ public class SmsServiceImp implements ISmsService
                     new PhoneNumber(twilioFromPhoneNumber),
                     message
             ).create();
-
         } catch (Exception e) {
             System.err.println("Failed to send SMS: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
-
 }

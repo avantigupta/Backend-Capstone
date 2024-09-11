@@ -15,14 +15,14 @@ import java.util.Map;
 
 import static com.backend.lms.constants.constants.*;
 
+@CrossOrigin
 @RestController
-@RequestMapping(value = "api/v1/issuances")
+@RequestMapping(value = "api/issuances")
 public class IssuanceController {
 
     @Autowired
-    private IIssuanceService iIssuanceService;
+    private IIssuanceService issuanceService;
 
-    @CrossOrigin
     @GetMapping("/list")
     public ResponseEntity<Page<IssuanceOutDTO>> getIssuanceList(
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -30,32 +30,32 @@ public class IssuanceController {
             @RequestParam(value = "search", required = false) String search
     ) {
 
-        Page<IssuanceOutDTO> issuanceOutDTO =iIssuanceService.getIssuanceList(page,size,search);
+        Page<IssuanceOutDTO> issuanceOutDTO = issuanceService.getIssuanceList(page,size,search);
         return ResponseEntity.status(HttpStatus.OK).body(issuanceOutDTO);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<IssuanceOutDTO> getIssuanceById(@PathVariable Long id) {
-        IssuanceOutDTO issuanceOutDTO = iIssuanceService.getIssuanceById(id);
+        IssuanceOutDTO issuanceOutDTO = issuanceService.getIssuanceById(id);
         return ResponseEntity.status(HttpStatus.OK).body(issuanceOutDTO);
     }
 
     @PostMapping("/save")
-    public  ResponseEntity<String> createIssuance(@RequestBody IssuanceInDTO issuanceDTO) {
-        String response = iIssuanceService.createIssuance(issuanceDTO);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public  ResponseEntity<ResponseDTO> createIssuance(@RequestBody IssuanceInDTO issuanceDTO) {
+        issuanceService.createIssuance(issuanceDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(OK_STATUS, ISSUANCE_CREATE_MESSAGE));
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<String> updateIssuance(@PathVariable Long id, @RequestBody IssuanceInDTO issuanceInDTO) {
-        String response = iIssuanceService.updateIssuance(id, issuanceInDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    public ResponseEntity<ResponseDTO> updateIssuance(@PathVariable Long id, @RequestBody IssuanceInDTO issuanceInDTO) {
+        issuanceService.updateIssuance(id, issuanceInDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(OK_STATUS, ISSUANCE_UPDATE_MESSAGE));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteIssuance(@PathVariable Long id) {
-        String response = iIssuanceService.deleteIssuance(id);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    public ResponseEntity<ResponseDTO> deleteIssuance(@PathVariable Long id) {
+        issuanceService.deleteIssuance(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(OK_STATUS, ISSUANCE_DELETE_MESSAGE));
     }
 
     @GetMapping("/userHistory")
@@ -65,21 +65,21 @@ public class IssuanceController {
 
     @GetMapping("/countByType")
     public ResponseEntity<Map<String, Long>> getCountByIssuanceType() {
-        Map<String, Long> countMap = iIssuanceService.getCountByIssuanceType();
+        Map<String, Long> countMap = issuanceService.getCountByIssuanceType();
         return ResponseEntity.status(HttpStatus.OK).body(countMap);
     }
 
 
     @GetMapping("/countByStatus")
     public ResponseEntity<Long> getIssuedCount() {
-        Long issuedCount = iIssuanceService.getIssuedCount();
+        Long issuedCount = issuanceService.getIssuedCount();
         return ResponseEntity.status(HttpStatus.OK).body(issuedCount);
     }
 
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<IssuanceOutDTO>> getIssuanceByUserId(@PathVariable Long userId) {
-        List<IssuanceOutDTO> issuances = iIssuanceService.getIssuanceByUserId(userId);
+        List<IssuanceOutDTO> issuances = issuanceService.getIssuanceByUserId(userId);
         return ResponseEntity.ok(issuances);
     }
 }

@@ -3,9 +3,9 @@ package com.backend.lms.controllers;
 import com.backend.lms.dto.ResponseDto.ResponseDTO;
 import com.backend.lms.dto.usersDto.UsersInDTO;
 import com.backend.lms.dto.usersDto.UsersOutDTO;
-import com.backend.lms.entities.Category;
 import com.backend.lms.entities.Users;
 import com.backend.lms.jwt.JwtUtils;
+import com.backend.lms.mapper.UsersMapper;
 import com.backend.lms.services.IUsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,16 +15,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
-import static com.backend.lms.constants.constants.DELETE_MESSAGE;
-import static com.backend.lms.constants.constants.OK_STATUS;
+import static com.backend.lms.constants.constants.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping(value = "api/v1/users")
 public class UsersController {
 
     @Autowired
-    private IUsersService iUsersService;
+    private IUsersService usersService;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -32,44 +33,41 @@ public class UsersController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @CrossOrigin
     @PostMapping("/register")
-    public ResponseEntity<String> createUsers(@RequestBody List<UsersInDTO> usersInDTOList) {
+    public ResponseEntity<ResponseDTO> createUser(@RequestBody List<UsersInDTO> usersInDTOList) {
         for (UsersInDTO usersInDTO : usersInDTOList) {
-            iUsersService.createUser(usersInDTO);
+            usersService.createUser(usersInDTO);
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Users added successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(OK_STATUS, USER_CREATE_MESSAGE));
     }
 
     @GetMapping
-    public ResponseEntity<List<UsersOutDTO>> getAllUsers() {
-        List<UsersOutDTO> usersList = iUsersService.getAllUsers();
+    public ResponseEntity<List<UsersOutDTO>> getAllUser() {
+        List<UsersOutDTO> usersList = usersService.getAllUsers();
         return ResponseEntity.status(HttpStatus.OK).body(usersList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UsersOutDTO> getUserById(@PathVariable Long id) {
-        UsersOutDTO user = iUsersService.getUserById(id);
+        UsersOutDTO user = usersService.getUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-
     @PatchMapping("/update/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UsersInDTO usersDTO) {
-        String response =iUsersService.updateUser(id, usersDTO);
-        return  ResponseEntity.status(HttpStatus.OK).body(response);
+    public ResponseEntity<ResponseDTO> updateUser(@PathVariable Long id, @RequestBody UsersInDTO usersDTO) {
+        usersService.updateUser(id, usersDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(OK_STATUS, USER_UPDATE_MESSAGE));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDTO> deleteUser(@PathVariable Long id) {
-        iUsersService.deleteUser(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(OK_STATUS, DELETE_MESSAGE));
+        usersService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(OK_STATUS, USER_DELETE_MESSAGE));
     }
-
 
     @GetMapping("/count")
     public ResponseEntity<Long> getUserCount() {
-        Long userCount = iUsersService.getUserCount();
+        Long userCount = usersService.getUserCount();
         return ResponseEntity.status(HttpStatus.OK).body(userCount);
     }
 
@@ -79,19 +77,25 @@ public class UsersController {
             @RequestParam(value = "size", defaultValue = "5") int size,
             @RequestParam(value = "search", required = false) String search
     ){
-        Page<UsersOutDTO> users = iUsersService.getUsers(page, size, search);
+        Page<UsersOutDTO> users = usersService.getUsers(page, size, search);
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
-    @CrossOrigin
+
     @GetMapping("/number/{number}")
     public  ResponseEntity<UsersOutDTO> getUserByMobile(@PathVariable String number) {
 
-        UsersOutDTO usersOutDTO = iUsersService.getUserByMobile(number);
+        UsersOutDTO usersOutDTO = usersService.getUserByMobile(number);
 
         return ResponseEntity.status(HttpStatus.OK).body(usersOutDTO);
     }
 
-
-
-
+    @GetMapping("/user-by-phone")
+    public ResponseEntity<UsersOutDTO> getUserByPhone(@RequestParam String phoneNumber) {
+        Optional<Users> userOptional = usersService.findByPhoneNumber(phoneNumber);
+        if (userOptional.isPresent()) {
+            return new ResponseEntity<>(UsersMapper.mapToUsersOutDTO(userOptional.get()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

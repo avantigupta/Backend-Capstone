@@ -16,12 +16,9 @@ public class UsersMapper {
         usersOutDTO.setEmail(user.getEmail());
         usersOutDTO.setPhoneNumber(user.getPhoneNumber());
         usersOutDTO.setRole(user.getRole());
-//        usersOutDTO.setPassword(user.getPassword());  // Be cautious about exposing passwords
-
         return usersOutDTO;
     }
 
-    // Map UsersInDTO to Users entity
     public static Users mapToUsers(UsersInDTO usersInDTO) {
         Users user = new Users();
         user.setId(usersInDTO.getId());
@@ -30,7 +27,6 @@ public class UsersMapper {
         user.setPhoneNumber(usersInDTO.getPhoneNumber());
         user.setRole(usersInDTO.getRole());
         user.setPassword(usersInDTO.getPassword());
-
         return user;
     }
 
