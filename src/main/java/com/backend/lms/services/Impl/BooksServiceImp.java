@@ -123,4 +123,9 @@ public class BooksServiceImp implements IBooksService {
     public Long getBookCount() {
         return booksRepository.count();
     }
+
+    @Override
+    public List<Books> findBooksByTitleContaining(String searchTerm) {
+        return booksRepository.findByTitleContainingIgnoreCase(searchTerm);
+    }
 }

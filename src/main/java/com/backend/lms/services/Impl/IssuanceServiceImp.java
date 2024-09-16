@@ -91,7 +91,7 @@ public class IssuanceServiceImp implements IIssuanceService {
                         savedIssuance.getIssuedAt().toLocalDate(),
                         savedIssuance.getReturnedAt().toLocalDate());
 
-    //    iSmsService.sendSms(savedIssuance.getUser().getPhoneNumber(), message);
+     iSmsService.sendSms(savedIssuance.getUser().getPhoneNumber(), message);
             return "Issuance Added Successfully with ID: " + issuance.getId();
         } else {
             return "No copies available for the selected book.";
@@ -120,14 +120,16 @@ public class IssuanceServiceImp implements IIssuanceService {
             if (issuanceInDTO.getStatus() != null) {
                 existingIssuance.setStatus(issuanceInDTO.getStatus());
             }
+            if(issuanceInDTO.getReturnedAt()!= null)
+                existingIssuance.setReturnedAt(issuanceInDTO.getReturnedAt());
             if ("Returned".equalsIgnoreCase(issuanceInDTO.getStatus()) &&
                     !"Returned".equalsIgnoreCase(originalStatus)) {
                 Books book = booksRepository.findById(existingIssuance.getBook().getId())
                         .orElseThrow(() -> new ResourceNotFoundException("Book not found with ID: " + existingIssuance.getBook().getId()));
                 book.setQuantity(book.getQuantity() + 1);
-                booksRepository.save(book);  // Save the updated book
+                booksRepository.save(book);
             }
-            issuanceRepository.save(existingIssuance);  // Save the updated issuance
+            issuanceRepository.save(existingIssuance);
             return "Issuance updated successfully.";
         } else {
             throw new ResourceNotFoundException("Issuance not found with ID: " + id);

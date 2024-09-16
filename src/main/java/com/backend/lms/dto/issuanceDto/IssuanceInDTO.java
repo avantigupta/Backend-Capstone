@@ -1,7 +1,6 @@
 package com.backend.lms.dto.issuanceDto;
 
 
-import com.backend.lms.dto.booksDto.BooksOutDTO;
 import lombok.*;
 
 import java.sql.Timestamp;

@@ -13,10 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.backend.lms.constants.constants.*;
 
@@ -76,22 +73,8 @@ public class BooksController {
         return ResponseEntity.status(HttpStatus.OK).body(issuancesList);
     }
 
-    @GetMapping("/count/all")
-    public ResponseEntity<Map<String, Object>> getAllCounts() {
-        Map<String, Object> counts = new HashMap<>();
-
-        Long bookCount = booksService.getBookCount();
-        Long categoryCount = categoryService.getCategoryCount();
-        Long userCount = usersService.getUserCount();
-        Map<String, Long> issuanceCountByType = issuanceService.getCountByIssuanceType();
-        Long activeUserCount = issuanceService.getIssuedCount();
-
-        counts.put("bookCount", bookCount);
-        counts.put("categoryCount", categoryCount);
-        counts.put("userCount", userCount);
-        counts.put("issuanceCountByType", issuanceCountByType);
-        counts.put("activeUserCount", activeUserCount);
-
-        return ResponseEntity.status(HttpStatus.OK).body(counts);
+    @GetMapping("/suggestions")
+    public List<Books> getBookSuggestions(@RequestParam String searchTerm) {
+        return booksService.findBooksByTitleContaining(searchTerm );
     }
 }

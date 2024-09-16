@@ -21,7 +21,7 @@ import static com.backend.lms.constants.constants.*;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "api/v1/users")
+@RequestMapping(value = "api/users")
 public class UsersController {
 
     @Autowired

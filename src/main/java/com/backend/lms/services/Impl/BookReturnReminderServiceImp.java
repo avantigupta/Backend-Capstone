@@ -23,11 +23,13 @@ public class BookReturnReminderServiceImp implements IBookReturnReminderService 
         private final ISmsService ismsService;
 
         @Override
-        @Scheduled(cron = "0 * * * * *", zone = "Asia/Kolkata")
+        @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Kolkata")
         public void sendReturnRemainder() {
             LocalDateTime startOfTomorrow = LocalDateTime.now().plusDays(1).toLocalDate().atStartOfDay();
             LocalDateTime endOfTomorrow = startOfTomorrow.plusDays(1).minusSeconds(1);
-            List<Issuance> dueTomorrow = issuanceRepository.findAllByReturnedAtBetweenAndStatus(startOfTomorrow, endOfTomorrow, "Issued");
+            List<Issuance> dueTomorrow = issuanceRepository.findAllByReturnedAtBetweenAndStatus(startOfTomorrow, endOfTomorrow, "ISSUED");
+            System.out.println("SCHEDULER CALLED" + dueTomorrow);
+
             for (Issuance issuance : dueTomorrow) {
                 String message = String.format("\nReminder:\n" +
                                 "Please return the book '%s'\n" +
@@ -35,7 +37,8 @@ public class BookReturnReminderServiceImp implements IBookReturnReminderService 
                                 "by tomorrow (%s).",
                         issuance.getBook().getTitle(), issuance.getBook().getAuthor(),
                         issuance.getReturnedAt().toLocalDate());
-               // ismsService.sendSms(issuance.getUser().getPhoneNumber(), message);
+                ismsService.sendSms(issuance.getUser().getPhoneNumber(), message);
+                System.out.println(dueTomorrow);
             }
         }
 }

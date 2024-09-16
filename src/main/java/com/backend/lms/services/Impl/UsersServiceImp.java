@@ -52,13 +52,27 @@ public class UsersServiceImp implements IUsersService, UserDetailsService {
 
     @Override
     public String createUser(UsersInDTO usersInDTO) {
+
+        if (!usersInDTO.getEmail().endsWith(".com")) {
+            throw new IllegalArgumentException("Email domain must end with .com.");
+        }
+        Optional<Users> existingUserByEmail = usersRepository.findByEmail(usersInDTO.getEmail());
+        if (existingUserByEmail.isPresent()) {
+            throw new ResourceConflictException("Email is already in use.");
+        }
+        Optional<Users> existingUserByPhoneNumber = usersRepository.findByPhoneNumber(usersInDTO.getPhoneNumber());
+        if (existingUserByPhoneNumber.isPresent()) {
+            throw new ResourceConflictException("Mobile number is already in use.");
+        }
+
         String generatedPassword = passwordUtils.generateRandomPassword();
         String encodedPassword = passwordUtils.encodePassword(generatedPassword);
         Users user = UsersMapper.mapToUsers(usersInDTO);
         user.setPassword(encodedPassword);
         Users savedUser = usersRepository.save(user);
         String message = String.format( "\nWelcome %s\n" +
-                        "Thankyou user, You have been successfully registered to BookNest! \n" +
+                        "Thank You" +
+                        ", You have been successfully registered to BookNest! \n" +
                         "These are your login credentials\n" +
                         "Username: %s (OR) %s\n" +
                         "Password: %s",
@@ -71,6 +85,7 @@ public class UsersServiceImp implements IUsersService, UserDetailsService {
              iSmsService.sendSms(savedUser.getPhoneNumber(), message);
         return "User added successfully with ID: " + savedUser.getId() + ". The generated password is: " + generatedPassword;
     }
+
 
     @Override
     public Page<UsersOutDTO> getUsers(int page, int size, String search) {
@@ -196,11 +211,14 @@ public class UsersServiceImp implements IUsersService, UserDetailsService {
             user = usersRepository.findByPhoneNumber(name).orElseThrow(
                     () -> new UsernameNotFoundException("User not found for " + name));
         }
+
         return user;
     }
 
     @Override
     public UsersOutDTO getUserByMobile(String number) {
+
+
         Optional<Users> userOptional = usersRepository.findByPhoneNumber(number);
         if (userOptional.isPresent()) {
             Users user = userOptional.get();
@@ -209,4 +227,6 @@ public class UsersServiceImp implements IUsersService, UserDetailsService {
             throw new UsernameNotFoundException("User not found with phone number: " + number);
         }
     }
+
+
 }

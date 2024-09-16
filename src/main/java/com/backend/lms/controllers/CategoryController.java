@@ -24,7 +24,7 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> fetchCategories() {
-        List<CategoryDTO> categories = iCategoryService.fetchCategoriesAll();
+        List<CategoryDTO> categories = categoryService.fetchCategoriesAll();
         return ResponseEntity.status(HttpStatus.OK).body(categories);
     }
 

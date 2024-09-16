@@ -22,4 +22,6 @@ public interface IBooksService {
 
     List<Issuance> getIssuancesByBookId(Long bookId);
 
+    List<Books> findBooksByTitleContaining(String searchTerm);
+
 }

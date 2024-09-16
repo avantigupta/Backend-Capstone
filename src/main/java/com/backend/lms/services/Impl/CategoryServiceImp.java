@@ -110,8 +110,8 @@ public class CategoryServiceImp implements ICategoryService {
         if (hasIssuedBooks) {
             throw new MethodNotAllowedException("Category cannot be deleted as some books under this category are currently issued.");
         }
-        booksInCategory.forEach(book -> issuanceRepository.deleteByBookId(book.getId())); // Remove all issuances for these books
-        booksRepository.deleteAll(booksInCategory); // Remove all books from the category
+        booksInCategory.forEach(book -> issuanceRepository.deleteByBookId(book.getId()));
+        booksRepository.deleteAll(booksInCategory);
         categoryRepository.deleteById(id); // Remove the category
         return "Category and all related books deleted successfully";
     }
